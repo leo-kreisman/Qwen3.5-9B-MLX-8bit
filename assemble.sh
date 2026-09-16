@@ -7,7 +7,7 @@
 # three <2 GiB byte-range parts and concatenated back here.
 #
 # Usage:
-#   ./assemble.sh              # download + reassemble into ./weights
+#   ./assemble.sh              # download + reassemble into this directory
 #   ./assemble.sh --verify     # only re-verify existing files
 #   DEST=~/models ./assemble.sh
 #
@@ -32,17 +32,23 @@ SHARDS="model-00001-of-00002.safetensors model-00002-of-00002.safetensors"
 PARTS_PER_SHARD=3
 
 # --- BEGIN GENERATED HASHES ---
-# Regenerate with scripts/split_weights.sh after re-splitting. Do not edit by hand.
+# Regenerate with scripts/split_weights.py after re-splitting. Do not edit by hand.
 shard_expected_sha() {
   case "$1" in
-    model-00001-of-00002.safetensors) echo "PLACEHOLDER_SHARD_0" ;;
-    model-00002-of-00002.safetensors) echo "PLACEHOLDER_SHARD_1" ;;
+    model-00001-of-00002.safetensors) echo "0dcb3cdba0f43743875c861792685da5266aebcb58f7c0e345b9cd090bb0d289" ;;
+    model-00002-of-00002.safetensors) echo "5abf861e7a13e7af805105270b2648634b41fda02238ae8ee1bd64628acce9b1" ;;
     *) echo "unknown shard: $1" >&2; return 1 ;;
   esac
 }
 
 part_expected_sha() {
   case "$1" in
+    model-00001-of-00002.safetensors.part-0) echo "acef14c2b9d677ead91d52a9c37b237bcf8add12bfaeaf835a8540eb74967897" ;;
+    model-00001-of-00002.safetensors.part-1) echo "bd625308afd9a06616ff36231b17dae3339f29e18425b8b7bad334c9a8d7e1f0" ;;
+    model-00001-of-00002.safetensors.part-2) echo "4c669cb2665f5def999813705ef487b9b4cae8498cc29aabe8f9c010b4fee568" ;;
+    model-00002-of-00002.safetensors.part-0) echo "b54e5cbbbb759bbf28b24b26ec43f2670edff02a66960bc540cf4828e30067fb" ;;
+    model-00002-of-00002.safetensors.part-1) echo "1fdb0439249dcb12c0b081cabb4f77367209b51ea6790545f1b948905523d9b3" ;;
+    model-00002-of-00002.safetensors.part-2) echo "1ba781142f9db3b4179f9da018e41be8ddff7792b0847d286d5f94b9235b88a4" ;;
     *) echo "unknown part: $1" >&2; return 1 ;;
   esac
 }

@@ -47,12 +47,16 @@ verified, and re-fetches any part that fails its checksum.
 
 | Release asset | Bytes | sha256 (first 16) |
 | --- | --- | --- |
-| `model-00001-of-00002.safetensors.part-0` | 1,779,840,842 | see `MANIFEST.sha256` |
-| `model-00001-of-00002.safetensors.part-1` | 1,779,840,842 | see `MANIFEST.sha256` |
-| `model-00001-of-00002.safetensors.part-2` | 1,779,840,841 | see `MANIFEST.sha256` |
-| `model-00002-of-00002.safetensors.part-0` | 1,695,689,966 | see `MANIFEST.sha256` |
-| `model-00002-of-00002.safetensors.part-1` | 1,695,689,966 | see `MANIFEST.sha256` |
-| `model-00002-of-00002.safetensors.part-2` | 1,695,689,966 | see `MANIFEST.sha256` |
+| `model-00001-of-00002.safetensors.part-0` | 1,779,840,842 | `acef14c2b9d677ea` |
+| `model-00001-of-00002.safetensors.part-1` | 1,779,840,842 | `bd625308afd9a066` |
+| `model-00001-of-00002.safetensors.part-2` | 1,779,840,841 | `4c669cb2665f5def` |
+| `model-00002-of-00002.safetensors.part-0` | 1,695,689,966 | `b54e5cbbbb759bbf` |
+| `model-00002-of-00002.safetensors.part-1` | 1,695,689,966 | `1fdb0439249dcb12` |
+| `model-00002-of-00002.safetensors.part-2` | 1,695,689,966 | `1ba781142f9db3b4` |
+
+Full hashes are in [`MANIFEST.sha256`](../../releases/tag/weights-v1) and are
+also pinned inside `assemble.sh`, so the script verifies every part and can
+re-fetch any that fails.
 
 Assembled shard hashes (identical to Hugging Face):
 
