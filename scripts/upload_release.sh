@@ -104,11 +104,14 @@ for a in json.load(sys.stdin):
   fi
 
   printf '    [upload] %-48s %14d bytes\n' "$base" "$size"
+  # --upload-file streams from disk. Do NOT use --data-binary @file here:
+  # curl buffers that form in memory, which fails outright ("out of memory")
+  # on 1.7 GB parts and would also balloon the process on smaller ones.
   code="$(curl -sS -o /tmp/gh_asset_resp.$$ -w '%{http_code}' \
     -X POST "${UPLOADS}/releases/${release_id}/assets?name=${base}" \
     -H "Authorization: Bearer ${TOKEN}" \
     -H "Content-Type: application/octet-stream" \
-    --data-binary "@${file}")"
+    --upload-file "${file}")"
 
   if [ "$code" != "201" ]; then
     echo "    [FAIL]   ${base} -> HTTP ${code}" >&2
