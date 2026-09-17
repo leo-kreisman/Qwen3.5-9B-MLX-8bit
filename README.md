@@ -45,18 +45,66 @@ hashes from Hugging Face. When it finishes, the checkout is a loadable model
 directory. It is resumable — re-running it skips parts already downloaded and
 verified, and re-fetches any part that fails its checksum.
 
-| Release asset | Bytes | sha256 (first 16) |
+| Release asset | Bytes | sha256 |
 | --- | --- | --- |
-| `model-00001-of-00002.safetensors.part-0` | 1,779,840,842 | `acef14c2b9d677ea` |
-| `model-00001-of-00002.safetensors.part-1` | 1,779,840,842 | `bd625308afd9a066` |
-| `model-00001-of-00002.safetensors.part-2` | 1,779,840,841 | `4c669cb2665f5def` |
-| `model-00002-of-00002.safetensors.part-0` | 1,695,689,966 | `b54e5cbbbb759bbf` |
-| `model-00002-of-00002.safetensors.part-1` | 1,695,689,966 | `1fdb0439249dcb12` |
-| `model-00002-of-00002.safetensors.part-2` | 1,695,689,966 | `1ba781142f9db3b4` |
+| `model-00001-of-00002.safetensors.part-0` | 1,779,840,842 | `acef14c2b9d677ead91d52a9c37b237bcf8add12bfaeaf835a8540eb74967897` |
+| `model-00001-of-00002.safetensors.part-1` | 1,779,840,842 | `bd625308afd9a06616ff36231b17dae3339f29e18425b8b7bad334c9a8d7e1f0` |
+| `model-00001-of-00002.safetensors.part-2` | 1,779,840,841 | `4c669cb2665f5def999813705ef487b9b4cae8498cc29aabe8f9c010b4fee568` |
+| `model-00002-of-00002.safetensors.part-0` | 1,695,689,966 | `b54e5cbbbb759bbf28b24b26ec43f2670edff02a66960bc540cf4828e30067fb` |
+| `model-00002-of-00002.safetensors.part-1` | 1,695,689,966 | `1fdb0439249dcb12c0b081cabb4f77367209b51ea6790545f1b948905523d9b3` |
+| `model-00002-of-00002.safetensors.part-2` | 1,695,689,966 | `1ba781142f9db3b4179f9da018e41be8ddff7792b0847d286d5f94b9235b88a4` |
 
-Full hashes are in [`MANIFEST.sha256`](../../releases/tag/weights-v1) and are
-also pinned inside `assemble.sh`, so the script verifies every part and can
-re-fetch any that fails.
+These are the **complete 64-character hashes** — compare against them in full,
+not as prefixes. The same values are published in `MANIFEST.sha256` and pinned
+inside `assemble.sh`, so the script verifies every part and re-fetches any that
+fails.
+
+Note that `model-00001-of-00002.safetensors.part-2` is **one byte smaller** than
+parts 0 and 1. That is expected: 5,339,522,525 does not divide evenly by three,
+so the final part carries the remainder. It is not a truncated download.
+
+### Verifying the parts yourself
+
+`MANIFEST.sha256` is a standard checksum file, so `shasum -c` can check every
+part in one step. From the repository root, after `assemble.sh` has downloaded
+them into `.parts/`:
+
+```bash
+curl -fLO https://github.com/leo-kreisman/Qwen3.5-9B-MLX-8bit/releases/download/weights-v1/MANIFEST.sha256
+grep 'safetensors\.part-' MANIFEST.sha256 > parts.sha256
+(cd .parts && shasum -a 256 -c ../parts.sha256)
+```
+
+A good download prints `OK` for all six lines:
+
+```
+model-00001-of-00002.safetensors.part-0: OK
+model-00001-of-00002.safetensors.part-1: OK
+model-00001-of-00002.safetensors.part-2: OK
+model-00002-of-00002.safetensors.part-0: OK
+model-00002-of-00002.safetensors.part-1: OK
+model-00002-of-00002.safetensors.part-2: OK
+```
+
+To check one file by eye, hash it and compare the whole line against the table
+above:
+
+```bash
+shasum -a 256 .parts/model-00001-of-00002.safetensors.part-2
+```
+
+> **If a part fails its checksum, the download is wrong — not the hash.** Delete
+> the file and re-fetch it; `assemble.sh` does exactly this on its own:
+>
+> ```bash
+> rm -f .parts/model-00001-of-00002.safetensors.part-2
+> ./assemble.sh
+> ```
+>
+> Do **not** edit the expected hashes in `assemble.sh` to match a download. Those
+> values pin the published bytes. Changing one to accept a corrupt part converts
+> a loud, catchable failure into a model that loads and silently produces wrong
+> output.
 
 Assembled shard hashes (identical to Hugging Face):
 
